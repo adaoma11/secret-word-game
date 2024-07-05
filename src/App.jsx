@@ -23,6 +23,11 @@ function App() {
   const [pickedCategory, setPickedCategory] = useState("");
   const [letters, setLetters] = useState([]);
 
+  const [score, setScore] = useState(0);
+  const [remainingTrials, setRemainingTrials] = useState(5);
+  const [correctLetters, setCorrectLetters] = useState([]);
+  const [wrongLetters, setWrongLetters] = useState([]);
+
   const pickWordAndCategory = () => {
     const categories = Object.keys(words);
     const category =
@@ -59,7 +64,18 @@ function App() {
   return (
     <div className="App">
       {gameStage === "start" && <StartScreen startGame={startGame} />}
-      {gameStage === "game" && <Game verifyLetter={verifyLetter} />}
+      {gameStage === "game" && (
+        <Game
+          pickedCategory={pickedCategory}
+          pickedWord={pickedWord}
+          letters={letters}
+          score={score}
+          remainingTrials={remainingTrials}
+          correctLetters={correctLetters}
+          wrongLetters={wrongLetters}
+          verifyLetter={verifyLetter}
+        />
+      )}
       {gameStage === "end" && <GameOver retry={retry} />}
     </div>
   );
