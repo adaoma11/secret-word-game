@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 // components
@@ -15,6 +15,8 @@ const stages = [
   { id: 3, name: "end" },
 ];
 
+const trialsQty = 5;
+
 function App() {
   const [gameStage, setGameStage] = useState(stages[0].name);
   const [words] = useState(wordsList);
@@ -24,7 +26,7 @@ function App() {
   const [letters, setLetters] = useState([]);
 
   const [score, setScore] = useState(0);
-  const [remainingTrials, setRemainingTrials] = useState(5);
+  const [remainingTrials, setRemainingTrials] = useState(trialsQty);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
 
@@ -49,7 +51,6 @@ function App() {
     setPickedCategory(category);
     setPickedWord(word);
     setLetters(wordLetters);
-
     setGameStage(stages[1].name);
   };
 
@@ -76,10 +77,26 @@ function App() {
         ...actualWrongLetters,
         normalizedLetter,
       ]);
+
+      setRemainingTrials((actualRemainingTrials) => actualRemainingTrials - 1);
     }
   };
 
+  const clearLettersStates = () => {
+    setCorrectLetters([]);
+    setWrongLetters([]);
+  };
+
+  useEffect(() => {
+    if (remainingTrials <= 0) {
+      clearLettersStates();
+      setGameStage(stages[2].name);
+    }
+  }, [remainingTrials]);
+
   const retry = () => {
+    setScore(0);
+    setRemainingTrials(trialsQty);
     setGameStage(stages[0].name);
   };
 
@@ -98,7 +115,7 @@ function App() {
           verifyLetter={verifyLetter}
         />
       )}
-      {gameStage === "end" && <GameOver retry={retry} />}
+      {gameStage === "end" && <GameOver score={score} retry={retry} />}
     </div>
   );
 }
