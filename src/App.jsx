@@ -53,8 +53,30 @@ function App() {
     setGameStage(stages[1].name);
   };
 
-  const verifyLetter = () => {
-    setGameStage(stages[2].name);
+  const verifyLetter = (letter) => {
+    const normalizedLetter = letter.toLowerCase();
+
+    // check if the letter has already been used
+    if (
+      correctLetters.includes(
+        normalizedLetter || wrongLetters.includes(normalizedLetter)
+      )
+    ) {
+      return;
+    }
+
+    // push a guessed letter or decrease the trials qty
+    if (letters.includes(normalizedLetter)) {
+      setCorrectLetters((actualGuessedLetters) => [
+        ...actualGuessedLetters,
+        normalizedLetter,
+      ]);
+    } else {
+      setWrongLetters((actualWrongLetters) => [
+        ...actualWrongLetters,
+        normalizedLetter,
+      ]);
+    }
   };
 
   const retry = () => {
