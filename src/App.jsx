@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
 // components
@@ -30,7 +30,7 @@ function App() {
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
 
-  const pickWordAndCategory = () => {
+  const pickWordAndCategory = useCallback(() => {
     const categories = Object.keys(words);
     const category =
       categories[Math.floor(Math.random() * categories.length)].toLowerCase();
@@ -41,9 +41,11 @@ function App() {
       ].toLowerCase();
 
     return { category, word };
-  };
+  }, [words]);
 
-  const startGame = () => {
+  const startGame = useCallback(() => {
+    clearLettersStates();
+
     const { category, word } = pickWordAndCategory();
 
     let wordLetters = word.split("");
@@ -52,16 +54,15 @@ function App() {
     setPickedWord(word);
     setLetters(wordLetters);
     setGameStage(stages[1].name);
-  };
+  }, [pickWordAndCategory]);
 
   const verifyLetter = (letter) => {
     const normalizedLetter = letter.toLowerCase();
 
     // check if the letter has already been used
     if (
-      correctLetters.includes(
-        normalizedLetter || wrongLetters.includes(normalizedLetter)
-      )
+      correctLetters.includes(normalizedLetter) ||
+      wrongLetters.includes(normalizedLetter)
     ) {
       return;
     }
@@ -72,6 +73,8 @@ function App() {
         ...actualGuessedLetters,
         normalizedLetter,
       ]);
+
+      setScore((actualScore) => (actualScore += 10));
     } else {
       setWrongLetters((actualWrongLetters) => [
         ...actualWrongLetters,
@@ -87,13 +90,41 @@ function App() {
     setWrongLetters([]);
   };
 
+  const win = () => {
+    setTimeout(() => {
+      setScore((actualScore) => (actualScore += 50));
+      setRemainingTrials(
+        (actualRemainingTrials) => (actualRemainingTrials += 1)
+      );
+      startGame();
+    }, 1500);
+  };
+
+  const loose = () => {
+    clearLettersStates();
+    setGameStage(stages[2].name);
+  };
+
+  // check if the remainingTrials are over
   useEffect(() => {
     if (remainingTrials <= 0) {
-      clearLettersStates();
-      setGameStage(stages[2].name);
+      loose();
     }
   }, [remainingTrials]);
 
+  // check win condition
+  useEffect(() => {
+    const uniqueLetters = [...new Set(letters)];
+
+    if (
+      correctLetters.length > 0 &&
+      correctLetters.length === uniqueLetters.length
+    ) {
+      win();
+    }
+  }, [correctLetters, letters, startGame]);
+
+  // restarts the game
   const retry = () => {
     setScore(0);
     setRemainingTrials(trialsQty);
@@ -115,7 +146,9 @@ function App() {
           verifyLetter={verifyLetter}
         />
       )}
-      {gameStage === "end" && <GameOver score={score} retry={retry} />}
+      {gameStage === "end" && (
+        <GameOver pickedWord={pickedWord} score={score} retry={retry} />
+      )}
     </div>
   );
 }

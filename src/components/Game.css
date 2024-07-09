@@ -1,13 +1,29 @@
 .game h1 {
-  font-size: 2.5em;
+  font-size: 3.5em;
 }
 
 .game span {
+  color: orange;
   font-weight: bold;
 }
 
-.tip span {
-  color: #ecfa00;
+.stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  max-width: 70%;
+  margin: 0 auto;
+  border: 1px solid #046E6E;
+  border-radius: 1em;
+}
+
+.stats p {
+  margin: .25em;
+}
+
+.stats span {
+  font-size: 1.2em;
+  text-transform: capitalize;
 }
 
 .wordContainer {
@@ -18,15 +34,15 @@
 }
 
 .letter, .blankSquare {
-  height: 100px;
-  width: 100px;
-  font-size: 70px;
+  height: 1.5em;
+  width: 1.5em;
+  font-size: 4em;
   text-transform: uppercase;
   font-weight: bold;
   line-height: 1.5;
   border: 2px solid #046E6E;
   border-radius: .3em;
-  margin: 5px;
+  margin: .1em;
 }
 
 .letterContainer p {
@@ -40,20 +56,21 @@
 }
 
 .letterContainer input {
-  height: 45px;
-  width: 45px;
+  height: 1.5em;
+  width: 1.5em;
   font-size: 2em;
   text-align: center;
-  margin-right: 10px;
+  margin-right: .5em;
   border: 2px solid #046E6E;
   border-radius: .3em;
+  outline: none;
   background-color: transparent;
   color: #fff;
 }
 
 button.try {
-  width: 50px;
-  height: 50px;
+  width: 2.7em;
+  height: 2.7em;
   padding: 0;
   background: url(right-arrow.svg) no-repeat;
   border: none;
@@ -63,4 +80,18 @@ button.try {
 button.try:hover{
   background-color: transparent;
   box-shadow: 0 0 20px rgba(255,255,255,.1);
+}
+
+.wrongLettersContainer {
+  margin-top: 3em;
+}
+
+.wrongLettersContainer p {
+  font-size: 1.3em;
+}
+
+
+.wrongLettersContainer span {
+  font-size: 2.5em;
+  text-transform: uppercase;
 }

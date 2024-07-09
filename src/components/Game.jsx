@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Game.css";
 
 const Game = ({
@@ -14,6 +14,10 @@ const Game = ({
   const [letterTrial, setLetterTrial] = useState("");
   const letterInputRef = useRef(null);
 
+  useEffect(() => {
+    letterInputRef.current.focus();
+  }, [letterInputRef]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     verifyLetter(letterTrial);
@@ -23,16 +27,21 @@ const Game = ({
 
   return (
     <div className="game">
-      <p className="points">
-        <span>Pontuação: {score}</span>
-      </p>
+      <h1>Qual a palavra?</h1>
 
-      <h1>Adivinhe a palavra:</h1>
-      <h3 className="tip">
-        Dica sobre a palavra: <span>{pickedCategory}</span>
-      </h3>
+      <div className="stats">
+        <p>
+          Pontuação: <span>{score}</span>
+        </p>
 
-      <p>Tentativas restantes: {remainingTrials}</p>
+        <p>
+          Tentativas restantes: <span>{remainingTrials}</span>
+        </p>
+
+        <p>
+          Dica sobre a palavra: <span>{pickedCategory}</span>
+        </p>
+      </div>
 
       <div className="wordContainer">
         {letters.map((letter, index) =>
@@ -47,12 +56,12 @@ const Game = ({
       </div>
 
       <div className="letterContainer">
-        <p>Tente adivinhar a letra da palavra:</p>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="letter"
             maxLength="1"
+            autoComplete="off"
             required
             onChange={(e) => setLetterTrial(e.target.value)}
             value={letterTrial.toUpperCase()}
@@ -63,9 +72,9 @@ const Game = ({
       </div>
 
       <div className="wrongLettersContainer">
-        <p>Letras já utilizadas:</p>
+        <p>Letras erradas:</p>
         {wrongLetters.map((letter, index) => (
-          <span key={index}>{letter.toUpperCase()} </span>
+          <span key={index}>{letter} </span>
         ))}
       </div>
     </div>
